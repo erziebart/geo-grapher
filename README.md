@@ -1,2 +1,2 @@
 # geo-grapher
-Parametric graph which can change over time
+parametric graph which can change over time
