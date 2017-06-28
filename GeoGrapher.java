@@ -38,6 +38,7 @@ public class GeoGrapher extends JFrame{
         GeoGrapher gg = new GeoGrapher(1500,800);
         gg.setVisible(true);
     }
+    
     private Image dbImage;
     private Graphics dbGraphics;
     
@@ -233,13 +234,5 @@ public class GeoGrapher extends JFrame{
                 }
             }
         }
-    }
-    
-    private double functionX(double t) {
-        return (5/Math.cos(22*t-0.25*time)*Math.cos(t+0.25*time));
-    }
-    
-    private double functionY(double t) {
-        return (5/Math.cos(22*t-0.25*time)*Math.sin(t+0.25*time));
     }
 }
