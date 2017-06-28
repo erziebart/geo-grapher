@@ -1,4 +1,4 @@
- package geographer;
+package geographer;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -9,7 +9,9 @@ import javax.swing.JFrame;
 
 public class GeoGrapher extends JFrame{
     
-    double xradius = 15;
+	private static final long serialVersionUID = 1L;
+	
+	double xradius = 15;
     double yradius = 15;
     double xscale = 1;
     double yscale = 1;
@@ -18,23 +20,25 @@ public class GeoGrapher extends JFrame{
     double circleradius = 10;
     
     double n;
-    double nstep = Math.PI/30;
-    double nstart = 0;
-    double nstop = 2*Math.PI;
+    double nstep = 0.1;
+    double nstart = -15;
+    double nstop = 15;
     
     double time;
-    double tstep = Math.PI/30;
-    long steplength = 30;
-    double tstop = 2*Math.PI;
-    double tstart = 0;
+    double tstep = 0.1;
+    long steplength = 15;
+    double tstop = 10;
+    double tstart = -10;
     
     boolean removeVerticalLines = false;
     
-    //Function yfunction, xfunction; // "Parametric"
+    ExpressionTree yfunction, xfunction; // parametric functions
 
     public static void main(String[] args) {
         GeoGrapher gg = new GeoGrapher(1500,800);
+        gg.setVisible(true);
     }
+    
     private Image dbImage;
     private Graphics dbGraphics;
     
@@ -42,7 +46,6 @@ public class GeoGrapher extends JFrame{
         setTitle("Graph");
         setSize(width, height);
         setResizable(false);
-        setVisible(true);
         setBackground(Color.BLACK);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
@@ -54,8 +57,15 @@ public class GeoGrapher extends JFrame{
         
         time = tstart;
         
-        //yfunction = new Function("n");
-        //xfunction = new Function("n");
+        // the expressions
+        String[] exprX = {"n"};
+        String[] exprY = {"~","(","10","+","t",")","+","t","*","n","+","n","^","2"};
+        
+        xfunction = new ExpressionTree(exprX);
+        yfunction = new ExpressionTree(exprY);
+        
+        xfunction.computeConstants();
+        yfunction.computeConstants();
         
         // equations
         //"+(*(t,*(n,n)),+(*(2,n),3))"
@@ -112,39 +122,39 @@ public class GeoGrapher extends JFrame{
         drawGridlines(g);
         drawShape(g);
         
+        // update t
         if ((time <= tstop && tstep>0) || (time >= tstop && tstep<0)) {
             time += tstep;
-            try {
-                Thread.sleep(steplength);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(GeoGrapher.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            repaint();
         } else {
             time = tstart;
-            try {
-                Thread.sleep(steplength);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(GeoGrapher.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            repaint();
         }
+        
+        // thread sleep
+        try {
+            Thread.sleep(steplength);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(GeoGrapher.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        repaint();
     }
     
-    //(5/Math.cos(44*Tvalue+0.25*time)*Math.cos(Tvalue+0.25*time));
-    //(5/Math.cos(44*Tvalue-0.25*time)*Math.sin(Tvalue-0.25*time));
+    //(5/Math.cos(44*t+0.25*time)*Math.cos(t+0.25*time));
+    //(5/Math.cos(44*t-0.25*time)*Math.sin(t-0.25*time));
     
-    //((5+5*Math.cos(Tvalue+time))*Math.cos(Tvalue));
-    //((5+5*Math.cos(Tvalue-time))*Math.sin(Tvalue));
+    //((5+5*Math.cos(t+time))*Math.cos(t));
+    //((5+5*Math.cos(t-time))*Math.sin(t));
     
-    //(10*Math.cos(60*Tvalue+time)*Math.cos(Tvalue)); // high res
-    //(10*Math.cos(60*Tvalue-time)*Math.sin(Tvalue));
+    //(10*Math.cos(60*t+time)*Math.cos(t)); // high res
+    //(10*Math.cos(60*t-time)*Math.sin(t));
     
-    //((9+2*Math.cos(time))*Math.cos(60*Tvalue)*Math.cos(Tvalue-0.5*Math.PI-0.05*time)); //high res
-    //((9+2*Math.sin(time))*Math.cos(60*Tvalue-0.5*Math.PI)*Math.sin(Tvalue-0.05*time));
+    //((9+2*Math.cos(time))*Math.cos(60*t)*Math.cos(t-0.5*Math.PI-0.05*time)); //high res
+    //((9+2*Math.sin(time))*Math.cos(60*t-0.5*Math.PI)*Math.sin(t-0.05*time));
     
-    // (Tvalue*Math.cos(time)+Tvalue*Math.cos(time+0.5*Math.PI));
-    // (Tvalue*Math.sin(time)+Tvalue*Math.sin(time+0.5*Math.PI));
+    // (t*Math.cos(time)+t*Math.cos(time+0.5*Math.PI));
+    // (t*Math.sin(time)+t*Math.sin(time+0.5*Math.PI));
+    
+    // (5/Math.cos(22*t-0.25*time)*Math.cos(t+0.25*time));
+    // (5/Math.cos(22*t-0.25*time)*Math.sin(t+0.25*time));
     
     public void drawAxes(Graphics g) {
         g.setColor(Color.red);
@@ -190,27 +200,39 @@ public class GeoGrapher extends JFrame{
     
     public void drawShape(Graphics g) {
         g.setColor(Color.CYAN);
-        //yfunction.setTime(time); // plug-in time
-        //xfunction.setTime(time);
-        int x1, y1, x2, y2;
-        for (n = nstart; n < nstop; n += nstep) {
-            x1 = (int)Math.round(originx + (functionX(n) * xpixels));
-            y1 = (int)Math.round(originy - (functionY(n) * ypixels));
-            x2 = (int)Math.round(originx + (functionX(n + nstep) * xpixels));
-            y2 = (int)Math.round(originy - (functionY(n + nstep) * ypixels));
+        
+        // plug-in time
+        xfunction.plugInT(time); 
+        yfunction.plugInT(time);
+        
+        double xlast, ylast, xnext, ynext;
+        int x1,y1,x2,y2;
+        
+        // initialize
+        xfunction.plugInN(nstart);
+        yfunction.plugInN(nstart);
+        xnext = xfunction.getValue();
+        ynext = yfunction.getValue();
+        
+        for (n = nstart+nstep; n < nstop; n += nstep) {
+            xlast = xnext;
+            ylast = ynext;
+            
+            xfunction.plugInN(n);
+            yfunction.plugInN(n);
+            xnext = xfunction.getValue();
+            ynext = yfunction.getValue();
+            
+            x1 = (int)Math.round(originx + xlast * xpixels);
+        	y1 = (int)Math.round(originy - ylast * ypixels);
+        	x2 = (int)Math.round(originx + xnext * xpixels);
+        	y2 = (int)Math.round(originy - ynext * ypixels);
+            
             if (Math.abs(x2-x1) <= getWidth() && Math.abs(y2-y1) <= getHeight()) {
                 if (!removeVerticalLines || (removeVerticalLines && !(x1==x2))) {
                     g.drawLine(x1, y1, x2, y2);
                 }
             }
         }
-    }
-    
-    private double functionX(double t) {
-        return ((5+5*Math.cos(t+time))*Math.cos(t));
-    }
-    
-    private double functionY(double t) {
-        return ((5+5*Math.cos(t-time))*Math.sin(t));
     }
 }
