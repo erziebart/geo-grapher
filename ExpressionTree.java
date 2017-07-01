@@ -119,9 +119,8 @@ public class ExpressionTree {
 	}
 	
 	// isNumeric function
-	// regex expression originally found on StackExchange posted by user CraigTP 
-	private static boolean isNumeric(String str)
-	{
+	// regex expression originally found on StackExchange posted by user CraigTP
+	private static boolean isNumeric(String str) {
 		return str.matches("-?\\d+(\\.\\d+)?");
 	}
 	
