@@ -3,6 +3,7 @@ package geographer;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -30,23 +31,74 @@ public class GeoGrapher extends JFrame{
     double tstop = 10;
     double tstart = -10;
     
+    boolean doCircle = false;
+    boolean doGrids = true;
     boolean removeVerticalLines = false;
+    
+    Color bg = Color.BLACK;
+    Color circle = Color.WHITE;
+    Color grid = Color.RED;
+    Color shape = Color.CYAN;
     
     ExpressionTree yfunction, xfunction; // parametric functions
 
     public static void main(String[] args) {
-        GeoGrapher gg = new GeoGrapher(1500,800);
-        gg.setVisible(true);
+        // the expressions
+        String exprX = "n";
+        String exprY = "t/24(n)(n+1)(n+2)(n+3)";
+        
+        try {
+        	exprX = args[0];
+        	exprY = args[1];
+        } catch(ArrayIndexOutOfBoundsException ex1) {
+        	try {
+        		exprY = args[0];
+        		exprX = "n";
+        	} catch(ArrayIndexOutOfBoundsException ex2) {
+        		System.out.println("Usage: java GeoGrapher [exprX] [exprY]");
+        		System.out.println("Usage: java GeoGrapher [exprY]");
+        	}
+        }
+        
+        // tokenize expressions
+        Tokenizer t = new Tokenizer();
+        boolean hasErrors = false;
+        
+        // tokenize x and check for errors
+        String[] tokenX = t.tokenizeExpression(exprX);
+        if(t.hasErrors()) {
+        	hasErrors = true;
+        	System.out.println("Errors in X equation: ");
+        	Iterator<MathSyntaxError> it = t.getErrorIterator();
+        	while(it.hasNext()) {
+        		System.out.println(it.next());
+        	}
+        }
+        
+        // tokenize y and check for errors
+        String[] tokenY = t.tokenizeExpression(exprY);
+        if(t.hasErrors()) {
+        	hasErrors = true;
+        	System.out.println("Errors in Y equation: ");
+        	Iterator<MathSyntaxError> it = t.getErrorIterator();
+        	while(it.hasNext()) {
+        		System.out.println(it.next());
+        	}
+        }
+        
+        if(!hasErrors) {
+        	// make grapher
+	        GeoGrapher gg = new GeoGrapher(1500,800);
+	        gg.setFunctions(tokenX, tokenY);
+	        gg.setVisible(true);
+        }
     }
-    
-    private Image dbImage;
-    private Graphics dbGraphics;
     
     public GeoGrapher(int width, int height) {
         setTitle("Graph");
         setSize(width, height);
         setResizable(false);
-        setBackground(Color.BLACK);
+        setBackground(bg);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         originx = width/2;
@@ -56,16 +108,6 @@ public class GeoGrapher extends JFrame{
         ypixels = originy / (float)yradius;
         
         time = tstart;
-        
-        // the expressions
-        String[] exprX = {"n"};
-        String[] exprY = {"~","(","10","+","t",")","+","t","*","n","+","n","^","2"};
-        
-        xfunction = new ExpressionTree(exprX);
-        yfunction = new ExpressionTree(exprY);
-        
-        xfunction.computeConstants();
-        yfunction.computeConstants();
         
         // equations
         //"+(*(t,*(n,n)),+(*(2,n),3))"
@@ -107,20 +149,36 @@ public class GeoGrapher extends JFrame{
         //System.out.println(yfunction(Tstart + Tstep));
     }
     
+    public void setFunctions(String[] tokenX, String[] tokenY) {
+    	xfunction = new ExpressionTree(tokenX);
+        yfunction = new ExpressionTree(tokenY);
+        
+        xfunction.computeConstants();
+        yfunction.computeConstants();
+    }
+    
     @Override
     public void paint(Graphics g) {
-        dbImage = createImage(getWidth(), getHeight());
-        dbGraphics = dbImage.getGraphics();
+        Image dbImage = createImage(getWidth(), getHeight());
+        Graphics dbGraphics = dbImage.getGraphics();
         paintComponents(dbGraphics);
         g.drawImage(dbImage, 0, 0, this);
     }
     
     @Override
     public void paintComponents(Graphics g) {
-        //drawCircle(g);
-        drawAxes(g);
-        drawGridlines(g);
-        drawShape(g);
+    	if(doCircle) {
+    		drawCircle(g);
+    	}
+        
+    	if(doGrids) {
+    		drawAxes(g);
+    		drawGridlines(g);
+    	}
+        
+        if(xfunction != null && yfunction != null) {
+        	drawShape(g);
+        }
         
         // update t
         if ((time <= tstop && tstep>0) || (time >= tstop && tstep<0)) {
@@ -157,13 +215,13 @@ public class GeoGrapher extends JFrame{
     // (5/Math.cos(22*t-0.25*time)*Math.sin(t+0.25*time));
     
     public void drawAxes(Graphics g) {
-        g.setColor(Color.red);
+        g.setColor(grid);
         g.drawLine(originx, 0, originx, 2*originy);
         g.drawLine(0, originy, 2*originx, originy);
     }
     
     public void drawGridlines(Graphics g) {
-        g.setColor(Color.red);
+        g.setColor(grid);
         for(double n = xpixels*xscale; n < getWidth() / 2; n += xpixels * xscale) {
             g.drawLine(originx + (int)Math.round(n),
                        originy + Math.round(ypixels/5),
@@ -191,7 +249,7 @@ public class GeoGrapher extends JFrame{
     }
     
     public void drawCircle(Graphics g) {
-        g.setColor(Color.WHITE);
+        g.setColor(circle);
         g.drawOval((int)Math.round(originx - (xpixels * circleradius)),
                    (int)Math.round(originy - (ypixels * circleradius)),
                    (int)Math.round(2 * circleradius * xpixels),
@@ -199,7 +257,7 @@ public class GeoGrapher extends JFrame{
     }
     
     public void drawShape(Graphics g) {
-        g.setColor(Color.CYAN);
+        g.setColor(shape);
         
         // plug-in time
         xfunction.plugInT(time); 
