@@ -41,8 +41,8 @@ public class DefOps {
 		}
 	}
 	
-	static class Exp extends Operation {
-		Exp(){super(2);}
+	static class Pow extends Operation {
+		Pow(){super(2);}
 		@Override
 		public double op(double[] operands) {
 			return Math.pow(operands[1],operands[0]);

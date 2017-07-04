@@ -7,15 +7,20 @@ public class Tokenizer {
 	enum TokenType {NUMER, BINOP, NEG, OPENP, CLOSEP, COMMA, LETTER, WHITE};
 	private ArrayList<MathSyntaxError> errors = new ArrayList<MathSyntaxError>();
 	
+	private FunctionList functions;
+	private FunctionList using;
+	
+	public Tokenizer() {
+		this.functions = new FunctionList();
+		this.functions.loadFunctionList();
+		this.using = new FunctionList();
+	}
+	
 	public String[] tokenizeExpression(String expr) {
-		// reset errors
-		while(!errors.isEmpty()) {
-			errors.remove(errors.size()-1);
-		}
-		
 		ArrayList<String> arr = new ArrayList<String>();
 		int parentheses = 0; // checking parentheses balance
 		boolean operand = true; // operand -or- operator expected
+		//int fargs = 0; // counting arguments passed to functions
 		TokenType lastType = TokenType.WHITE;
 		int begin, end = 0;
 		
@@ -145,26 +150,40 @@ public class Tokenizer {
 				} catch(StringIndexOutOfBoundsException ex) {}
 				String word = expr.substring(begin, end);
 				
-				// add implicit multiply if necessary
-				if(doImplicitMultiply(lastType)) {
-					// tokenize multiply
-					arr.add("*");
-					
-					// expect an operand
-					operand = true;
+				Function f = functions.get(word);
+				if(f != null) {
+					// add to list of used functions
+					using.add(f);
 				}
 				
-				// add the word
-				if(operand) {
-					// tokenize word
-					arr.add(word);
-					lastType = TokenType.LETTER;
+				// check if valid function
+				if(word.equals("t") || word.equals("n") 
+						|| f != null) {
 					
-					// expect an operator next
-					operand = false;
+					// add implicit multiply if necessary
+					if(doImplicitMultiply(lastType)) {
+						// tokenize multiply
+						arr.add("*");
+						
+						// expect an operand
+						operand = true;
+					}
+					
+					// add the word
+					if(operand) {
+						// tokenize word
+						arr.add(word);
+						lastType = TokenType.LETTER;
+						
+						// expect an operator next
+						operand = false;
+						
+					} else {
+						errors.add(new MathSyntaxError("operator expected",begin));
+					}
 					
 				} else {
-					errors.add(new MathSyntaxError("operator expected",begin));
+					errors.add(new MathSyntaxError("unknown name", begin));
 				}
 				
 			} else if(Character.isWhitespace(c)) {
@@ -201,11 +220,21 @@ public class Tokenizer {
 		return last == TokenType.NUMER || last == TokenType.CLOSEP;
 	}
 	
+	public void resetErrors() {
+		while(!errors.isEmpty()) {
+			errors.remove(errors.size()-1);
+		}
+	}
+	
 	public Iterator<MathSyntaxError> getErrorIterator() {
 		return errors.iterator();
 	}
 	
 	public boolean hasErrors() {
 		return !errors.isEmpty();
+	}
+	
+	public FunctionList getUsedFunctions() {
+		return using;
 	}
 }

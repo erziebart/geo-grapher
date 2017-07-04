@@ -21,15 +21,15 @@ public class GeoGrapher extends JFrame{
     double circleradius = 10;
     
     double n;
-    double nstep = 0.1;
+    double nstep = 0.01;
     double nstart = -15;
     double nstop = 15;
     
     double time;
-    double tstep = 0.1;
-    long steplength = 15;
-    double tstop = 10;
-    double tstart = -10;
+    double tstep = 0.125;
+    long steplength = 0;
+    double tstop = 15;
+    double tstart = -15;
     
     boolean doCircle = false;
     boolean doGrids = true;
@@ -45,7 +45,7 @@ public class GeoGrapher extends JFrame{
     public static void main(String[] args) {
         // the expressions
         String exprX = "n";
-        String exprY = "t/24(n)(n+1)(n+2)(n+3)";
+        String exprY = "t*log,2,n";
         
         try {
         	exprX = args[0];
@@ -74,6 +74,7 @@ public class GeoGrapher extends JFrame{
         		System.out.println(it.next());
         	}
         }
+        t.resetErrors();
         
         // tokenize y and check for errors
         String[] tokenY = t.tokenizeExpression(exprY);
@@ -85,11 +86,12 @@ public class GeoGrapher extends JFrame{
         		System.out.println(it.next());
         	}
         }
+        t.resetErrors();
         
         if(!hasErrors) {
         	// make grapher
 	        GeoGrapher gg = new GeoGrapher(1500,800);
-	        gg.setFunctions(tokenX, tokenY);
+	        gg.setFunctions(tokenX, tokenY, t.getUsedFunctions());
 	        gg.setVisible(true);
         }
     }
@@ -149,9 +151,9 @@ public class GeoGrapher extends JFrame{
         //System.out.println(yfunction(Tstart + Tstep));
     }
     
-    public void setFunctions(String[] tokenX, String[] tokenY) {
-    	xfunction = new ExpressionTree(tokenX);
-        yfunction = new ExpressionTree(tokenY);
+    public void setFunctions(String[] tokenX, String[] tokenY, FunctionList using) {
+    	xfunction = new ExpressionTree(tokenX, using);
+        yfunction = new ExpressionTree(tokenY, using);
         
         xfunction.computeConstants();
         yfunction.computeConstants();
@@ -281,15 +283,16 @@ public class GeoGrapher extends JFrame{
             xnext = xfunction.getValue();
             ynext = yfunction.getValue();
             
-            x1 = (int)Math.round(originx + xlast * xpixels);
-        	y1 = (int)Math.round(originy - ylast * ypixels);
-        	x2 = (int)Math.round(originx + xnext * xpixels);
-        	y2 = (int)Math.round(originy - ynext * ypixels);
-            
-            if (Math.abs(x2-x1) <= getWidth() && Math.abs(y2-y1) <= getHeight()) {
-                if (!removeVerticalLines || (removeVerticalLines && !(x1==x2))) {
+            if(!Double.isNaN(xlast) && !Double.isNaN(ylast) &&
+               !Double.isNaN(xnext) && !Double.isNaN(ynext)) {
+            	x1 = (int)Math.round(originx + xlast * xpixels);
+	        	y1 = (int)Math.round(originy - ylast * ypixels);
+	        	x2 = (int)Math.round(originx + xnext * xpixels);
+	        	y2 = (int)Math.round(originy - ynext * ypixels);
+	            
+	            if (Math.abs(x2-x1) <= getWidth() && Math.abs(y2-y1) <= getHeight()) {
                     g.drawLine(x1, y1, x2, y2);
-                }
+	            }
             }
         }
     }
