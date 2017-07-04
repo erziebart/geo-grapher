@@ -33,7 +33,6 @@ public class GeoGrapher extends JFrame{
     
     boolean doCircle = false;
     boolean doGrids = true;
-    boolean removeVerticalLines = false;
     
     Color bg = Color.BLACK;
     Color circle = Color.WHITE;
