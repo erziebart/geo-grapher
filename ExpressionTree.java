@@ -5,9 +5,12 @@ import java.util.Stack;
 
 public class ExpressionTree {
 	
+	private FunctionList using;
 	private ExpressionTreeNode head;
 	
-	public ExpressionTree(String[] tokens) {
+	public ExpressionTree(String[] tokens, FunctionList using) {
+		this.using = using;
+		
 		Stack<String> operations = new Stack<String>();
 		Stack<ExpressionTreeNode> nodes = new Stack<ExpressionTreeNode>();
 		
@@ -76,7 +79,7 @@ public class ExpressionTree {
 				}
 			}
 			catch (EmptyStackException ex) {
-				System.err.print("Not Enough Operands: " + ex);
+				System.err.println("Not Enough Operands: " + ex);
 			}
 		} else {
 			System.err.println("Invalid Operation:" + cur);
@@ -109,10 +112,14 @@ public class ExpressionTree {
 			op = new DefOps.Neg();
 			
 		} else if(operation.equals("^")) { // Exponentiation
-			op = new DefOps.Exp();
+			op = new DefOps.Pow();
 			
-		} else { // invalid operation
-			return null;
+		} else { // check functions
+			op = using.get(operation);	
+			
+			if(op == null) { // invalid operation
+				return null;
+			}
 		}
 		
 		return new ExpressionTreeNode(op);
@@ -152,7 +159,7 @@ public class ExpressionTree {
 				i++;
 			}
 			
-			return 0; // custom operators have the same precedence
+			return 0; // all functions have the same precedence
 		}
 	}
 	

@@ -27,10 +27,7 @@ public class ExpressionTreeNode {
 	}
 	
 	public int numOperands() {
-		//if(op != null) {
-			return op.argc;
-		//}
-		//return 0;
+		return op.argc;
 	}
 	
 	public boolean isLeaf() {
@@ -50,8 +47,8 @@ public class ExpressionTreeNode {
 	}
 	
 	public void computeConstants() {
-		// base case - do nothing to leaf nodes
-		if(isLeaf()) {
+		// base case - do nothing if op is null
+		if(op ==  null) {
 			return;
 		}
 		
