@@ -14,10 +14,11 @@ public class Functs {
 		public Log() {super("log", 2);}
 		@Override
 		public double op(double[] operands) {
+			double b = operands[1];
 			double x = operands[0];
-			double a = operands[1];
+			
 			return ((x < 0.1) ? Math.log(x) : Math.log1p(x-1.0)) /
-					((a < 0.1) ? Math.log(a) : Math.log1p(a-1.0));
+					((b < 0.1) ? Math.log(b) : Math.log1p(b-1.0));
 		}
 	}
 	

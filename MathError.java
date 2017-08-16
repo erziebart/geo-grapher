@@ -1,10 +1,10 @@
 package geographer;
 
-public class MathSyntaxError {
+public class MathError {
 	String what;
 	int position;
 	
-	public MathSyntaxError(String what, int position) {
+	public MathError(String what, int position) {
 		this.what = what;
 		this.position = position;
 	}
