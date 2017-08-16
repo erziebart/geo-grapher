@@ -44,11 +44,11 @@ public class Expression {
 		}
 		
 		// printing the tokens
-		System.out.print("{ ");
+		/*System.out.print("{ ");
 		for(Token t: tokens) {
 			System.out.print(t.toString() + " ");
 		}
-		System.out.print("}");
+		System.out.print("}");*/
 	}
 	
 	// resets the token and error lists
@@ -410,7 +410,7 @@ public class Expression {
 				
 				break;
 				
-			default:
+			default: // NEG -or- COMMA
 				break;
 			}	
 		}

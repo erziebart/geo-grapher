@@ -18,31 +18,16 @@ public class ExpressionTree {
 			String next = tokens[i];
 			
 			if(isNumeric(next)) { // constant
-				// check for function on top of stack
-				while(!operations.isEmpty() && Character.isAlphabetic(operations.peek().charAt(0))) {
-					this.processOperation(operations, nodes);
-				}
-				
 				ExpressionTreeNode node = createNode(null);
 				node.value = Double.parseDouble(next);
 				nodes.add(node);
 				
 			} else if(next.equals("t")) { // variable t
-				// check for function on top of stack
-				while(!operations.isEmpty() && Character.isAlphabetic(operations.peek().charAt(0))) {
-					this.processOperation(operations, nodes);
-				}
-				
 				ExpressionTreeNode node = createNode(null);
 				node.f_t = true;
 				nodes.add(node);
 				
 			} else if(next.equals("n")) { // variable n
-				// check for function on top of stack
-				while(!operations.isEmpty() && Character.isAlphabetic(operations.peek().charAt(0))) {
-					this.processOperation(operations, nodes);
-				}
-				
 				ExpressionTreeNode node = createNode(null);
 				node.f_n = true;
 				nodes.add(node);

@@ -60,7 +60,7 @@ public class GeoGrapher extends JFrame{
         		
         		// default expressions -- for debug
                 exprX.setExpression("n");
-                exprY.setExpression("e^e^e^n");
+                exprY.setExpression("log(e,n)");
     		}
     	}
     	
