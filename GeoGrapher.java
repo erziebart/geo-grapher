@@ -98,61 +98,6 @@ public class GeoGrapher extends JFrame{
 	        		exprX.getUsedFunctions(), exprY.getUsedFunctions());
 	        gg.setVisible(true);
         }
-    	
-        // the expressions
-        /*StringBuilder exprX, exprY;
-        
-        try {
-        	exprX = new StringBuilder(args[0]);
-        	exprY = new StringBuilder(args[1]);
-        } catch(ArrayIndexOutOfBoundsException ex1) {
-        	try {
-        		exprY = new StringBuilder(args[0]);
-        		exprX = new StringBuilder("n");
-        	} catch(ArrayIndexOutOfBoundsException ex2) {
-        		System.out.println("Usage: java GeoGrapher [exprX] [exprY]");
-        		System.out.println("Usage: java GeoGrapher [exprY]");
-        		
-        		// default expressions
-                exprX = new StringBuilder("n");
-                exprY = new StringBuilder("t*exp,n");
-        	}
-        }
-        
-        // tokenize expressions
-        Tokenizer tX = new Tokenizer(exprX);
-        Tokenizer tY = new Tokenizer(exprY);
-        boolean hasErrors = false;
-        
-        // tokenize x and check for errors
-        tX.tokenizeExpression();
-        if(tX.hasErrors()) {
-        	hasErrors = true;
-        	System.out.println("Errors in X equation: ");
-        	Iterator<MathSyntaxError> it = tX.getErrorIterator();
-        	while(it.hasNext()) {
-        		System.out.println(it.next());
-        	}
-        }
-        
-        // tokenize y and check for errors
-        tY.tokenizeExpression();
-        if(tY.hasErrors()) {
-        	hasErrors = true;
-        	System.out.println("Errors in Y equation: ");
-        	Iterator<MathSyntaxError> it = tY.getErrorIterator();
-        	while(it.hasNext()) {
-        		System.out.println(it.next());
-        	}
-        }
-        
-        if(!hasErrors) {
-        	// make grapher
-	        GeoGrapher gg = new GeoGrapher(1500,800);
-	        gg.setFunctions(tX.getTokens(), tY.getTokens(), 
-	        		tX.getUsedFunctions(), tY.getUsedFunctions());
-	        gg.setVisible(true);
-        }*/
     }
     
     public GeoGrapher(int width, int height) {

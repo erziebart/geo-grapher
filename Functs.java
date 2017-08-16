@@ -17,12 +17,8 @@ public class Functs {
 			double b = operands[1];
 			double x = operands[0];
 			
-			/*if(x == Math.E) {
-				return (x < 0.1) ? Math.log(x) : Math.log1p(x-1.0);
-			} else */{
-				return ((x < 0.1) ? Math.log(x) : Math.log1p(x-1.0)) /
+			return ((x < 0.1) ? Math.log(x) : Math.log1p(x-1.0)) /
 					((b < 0.1) ? Math.log(b) : Math.log1p(b-1.0));
-			}
 		}
 	}
 	

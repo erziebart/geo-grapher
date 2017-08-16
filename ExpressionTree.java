@@ -153,15 +153,11 @@ public class ExpressionTree {
 		} else if (op1.equals(op2)) { // same operation
 			return 1; // evaluate left to right
 			
-		} if(op1.equals("(")) {
+		} else if(op1.equals("(")) {
 			return -1;
 			
 		} else if(op2.equals("(")) {
 			return 1;
-			
-		} else if((op1.equals("~") || op1.equals("^"))
-			   && (op2.equals("~") || op2.equals("^"))) {
-			return -1; // evaluate right to left
 			
 		} else { // normal operations
 			String[] ops = {"+", "-", "*", "/", "~", "^"};
