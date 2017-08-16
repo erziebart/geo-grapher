@@ -18,16 +18,31 @@ public class ExpressionTree {
 			String next = tokens[i];
 			
 			if(isNumeric(next)) { // constant
+				// check for function on top of stack
+				while(!operations.isEmpty() && Character.isAlphabetic(operations.peek().charAt(0))) {
+					this.processOperation(operations, nodes);
+				}
+				
 				ExpressionTreeNode node = createNode(null);
 				node.value = Double.parseDouble(next);
 				nodes.add(node);
 				
 			} else if(next.equals("t")) { // variable t
+				// check for function on top of stack
+				while(!operations.isEmpty() && Character.isAlphabetic(operations.peek().charAt(0))) {
+					this.processOperation(operations, nodes);
+				}
+				
 				ExpressionTreeNode node = createNode(null);
 				node.f_t = true;
 				nodes.add(node);
 				
 			} else if(next.equals("n")) { // variable n
+				// check for function on top of stack
+				while(!operations.isEmpty() && Character.isAlphabetic(operations.peek().charAt(0))) {
+					this.processOperation(operations, nodes);
+				}
+				
 				ExpressionTreeNode node = createNode(null);
 				node.f_n = true;
 				nodes.add(node);
@@ -41,11 +56,22 @@ public class ExpressionTree {
 				}
 				operations.pop(); // pop open parentheses
 				
-			} else { // normal operation
-				while(!operations.isEmpty() && comparePrecedence(operations.peek(), next) >= 0) {
+			} else if(next.equals(",")) { // comma
+				while(!operations.peek().equals("(")) {
 					processOperation(operations, nodes);
 				}
-				operations.add(next);
+				
+			} else { // normal operation or identifier
+				while(!operations.isEmpty() && comparePrecedence(operations.peek(), next) > 0) {
+					processOperation(operations, nodes);
+				}
+				
+				if(next.endsWith("(")) { // function
+					operations.add(next.substring(0, next.length()-1));
+					operations.add("(");
+				} else {
+					operations.add(next);
+				}
 			}
 		}
 		
@@ -82,7 +108,7 @@ public class ExpressionTree {
 				System.err.println("Not Enough Operands: " + ex);
 			}
 		} else {
-			System.err.println("Invalid Operation:" + cur);
+			System.err.println("Invalid Operation: " + cur);
 		}
 		
 		// add back to stack
@@ -93,9 +119,9 @@ public class ExpressionTree {
 	private ExpressionTreeNode createNode(String operation) {
 		Operation op; // operation to perform
 		
-		if(operation == null) { // Default = Constant
+		if(operation == null) { // Default = number/variable
 			op = null;
-			
+
 		} else if(operation.equals("+")) { // Add
 			op = new DefOps.Add();
 			
@@ -115,7 +141,7 @@ public class ExpressionTree {
 			op = new DefOps.Pow();
 			
 		} else { // check functions
-			op = using.get(operation);	
+			op = using.get(operation);
 			
 			if(op == null) { // invalid operation
 				return null;
@@ -133,17 +159,24 @@ public class ExpressionTree {
 	
 	// returns int indicating relative operator precedence
 	// 1 = op1 has higher precedence than op2
-	// 0 = op1 and op2 have equal precedence
 	// -1 = op1 has lower precedence than op2
 	private static int comparePrecedence(String op1, String op2) {
-		if (op1.equals(op2)) { // same operation
-			return 0;
+		if((op1.equals("~") || op1.equals("^"))
+		&& (op2.equals("~") || op2.equals("^"))) {
+				return -1; // evaluate right to left
+		
+		} else if (op1.equals(op2)) { // same operation
+			return 1; // evaluate left to right
 			
-		} else if(op1.equals("(")) {
+		} if(op1.equals("(")) {
 			return -1;
 			
 		} else if(op2.equals("(")) {
 			return 1;
+			
+		} else if((op1.equals("~") || op1.equals("^"))
+			   && (op2.equals("~") || op2.equals("^"))) {
+			return -1; // evaluate right to left
 			
 		} else { // normal operations
 			String[] ops = {"+", "-", "*", "/", "~", "^"};
@@ -159,7 +192,7 @@ public class ExpressionTree {
 				i++;
 			}
 			
-			return 0; // all functions have the same precedence
+			return 1; // functions evaluate left to right
 		}
 	}
 	

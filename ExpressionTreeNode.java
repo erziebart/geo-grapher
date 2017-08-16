@@ -13,7 +13,6 @@ public class ExpressionTreeNode {
 		this.value = 0;
 		this.op = op;
 		children = new ArrayList<ExpressionTreeNode>();
-		
 	}
 	
 	public void addChild(ExpressionTreeNode node) {
@@ -27,7 +26,11 @@ public class ExpressionTreeNode {
 	}
 	
 	public int numOperands() {
-		return op.argc;
+		if(op != null) {
+			return op.argc;
+		} else {
+			return 0;
+		}
 	}
 	
 	public boolean isLeaf() {

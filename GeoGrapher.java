@@ -27,7 +27,7 @@ public class GeoGrapher extends JFrame{
     
     double time;
     double tstep = 0.125;
-    long steplength = 0;
+    long steplength = 10;
     double tstop = 15;
     double tstart = -15;
     
@@ -39,60 +39,120 @@ public class GeoGrapher extends JFrame{
     Color grid = Color.RED;
     Color shape = Color.CYAN;
     
-    ExpressionTree yfunction, xfunction; // parametric functions
+    ExpressionTree xfunction, yfunction; // parametric functions
 
     public static void main(String[] args) {
+    	// the expressions
+    	Expression exprX, exprY;
+    	exprX = new Expression();
+    	exprY = new Expression();
+    	
+    	try {
+    		exprX.setExpression(args[0]);
+    		exprY.setExpression(args[1]);
+    	} catch(ArrayIndexOutOfBoundsException ex1) {
+    		try {
+    			exprX.setExpression("n");
+    			exprY.setExpression(args[0]);
+    		} catch(ArrayIndexOutOfBoundsException ex2) {
+    			System.out.println("Usage: java GeoGrapher [exprX] [exprY]");
+        		System.out.println("Usage: java GeoGrapher [exprY]");
+        		
+        		// default expressions -- for debug
+                exprX.setExpression("n");
+                exprY.setExpression("e^e^e^n");
+    		}
+    	}
+    	
+    	// get default function list
+    	FunctionList defaults = new FunctionList();
+    	defaults.loadFunctionList();
+    	
+    	// parse expressions
+    	exprX.parseExpresison(defaults);
+    	exprY.parseExpresison(defaults);
+    	
+    	// check for errors
+    	boolean hasErrors = false;
+    	if(exprX.hasErrors()) {
+    		hasErrors = true;
+        	System.out.println("Errors in X equation: ");
+        	Iterator<MathError> it = exprX.getErrorIterator();
+        	while(it.hasNext()) {
+        		System.out.println(it.next());
+        	}
+    	}
+    	if(exprY.hasErrors()) {
+    		hasErrors = true;
+        	System.out.println("Errors in Y equation: ");
+        	Iterator<MathError> it = exprY.getErrorIterator();
+        	while(it.hasNext()) {
+        		System.out.println(it.next());
+        	}
+    	}
+    	
+    	if(!hasErrors) {
+        	// make grapher
+	        GeoGrapher gg = new GeoGrapher(1500,800);
+	        gg.setFunctions(exprX.getTokens(), exprY.getTokens(), 
+	        		exprX.getUsedFunctions(), exprY.getUsedFunctions());
+	        gg.setVisible(true);
+        }
+    	
         // the expressions
-        String exprX = "n";
-        String exprY = "t*log,2,n";
+        /*StringBuilder exprX, exprY;
         
         try {
-        	exprX = args[0];
-        	exprY = args[1];
+        	exprX = new StringBuilder(args[0]);
+        	exprY = new StringBuilder(args[1]);
         } catch(ArrayIndexOutOfBoundsException ex1) {
         	try {
-        		exprY = args[0];
-        		exprX = "n";
+        		exprY = new StringBuilder(args[0]);
+        		exprX = new StringBuilder("n");
         	} catch(ArrayIndexOutOfBoundsException ex2) {
         		System.out.println("Usage: java GeoGrapher [exprX] [exprY]");
         		System.out.println("Usage: java GeoGrapher [exprY]");
+        		
+        		// default expressions
+                exprX = new StringBuilder("n");
+                exprY = new StringBuilder("t*exp,n");
         	}
         }
         
         // tokenize expressions
-        Tokenizer t = new Tokenizer();
+        Tokenizer tX = new Tokenizer(exprX);
+        Tokenizer tY = new Tokenizer(exprY);
         boolean hasErrors = false;
         
         // tokenize x and check for errors
-        String[] tokenX = t.tokenizeExpression(exprX);
-        if(t.hasErrors()) {
+        tX.tokenizeExpression();
+        if(tX.hasErrors()) {
         	hasErrors = true;
         	System.out.println("Errors in X equation: ");
-        	Iterator<MathSyntaxError> it = t.getErrorIterator();
+        	Iterator<MathSyntaxError> it = tX.getErrorIterator();
         	while(it.hasNext()) {
         		System.out.println(it.next());
         	}
         }
-        t.resetErrors();
         
         // tokenize y and check for errors
-        String[] tokenY = t.tokenizeExpression(exprY);
-        if(t.hasErrors()) {
+        tY.tokenizeExpression();
+        if(tY.hasErrors()) {
         	hasErrors = true;
         	System.out.println("Errors in Y equation: ");
-        	Iterator<MathSyntaxError> it = t.getErrorIterator();
+        	Iterator<MathSyntaxError> it = tY.getErrorIterator();
         	while(it.hasNext()) {
         		System.out.println(it.next());
         	}
         }
-        t.resetErrors();
         
         if(!hasErrors) {
         	// make grapher
 	        GeoGrapher gg = new GeoGrapher(1500,800);
-	        gg.setFunctions(tokenX, tokenY, t.getUsedFunctions());
+	        gg.setFunctions(tX.getTokens(), tY.getTokens(), 
+	        		tX.getUsedFunctions(), tY.getUsedFunctions());
 	        gg.setVisible(true);
-        }
+        }*/
     }
     
     public GeoGrapher(int width, int height) {
@@ -150,9 +210,9 @@ public class GeoGrapher extends JFrame{
         //System.out.println(yfunction(Tstart + Tstep));
     }
     
-    public void setFunctions(String[] tokenX, String[] tokenY, FunctionList using) {
-    	xfunction = new ExpressionTree(tokenX, using);
-        yfunction = new ExpressionTree(tokenY, using);
+    public void setFunctions(String[] tokenX, String[] tokenY, FunctionList usingX, FunctionList usingY) {
+    	xfunction = new ExpressionTree(tokenX, usingX);
+        yfunction = new ExpressionTree(tokenY, usingY);
         
         xfunction.computeConstants();
         yfunction.computeConstants();
