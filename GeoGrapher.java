@@ -21,23 +21,23 @@ public class GeoGrapher extends JFrame{
     double circleradius = 10;
     
     double n;
-    double nstep = 0.01;
-    double nstart = -15;
-    double nstop = 15;
+    double nstep = Math.PI/90;
+    double nstart = 0;
+    double nstop = 2*Math.PI;
     
     double time;
-    double tstep = 0.125;
+    double tstep = Math.PI/90;
     long steplength = 10;
-    double tstop = 15;
-    double tstart = -15;
+    double tstop = 2*Math.PI;
+    double tstart = 0;
     
-    boolean doCircle = false;
-    boolean doGrids = true;
+    boolean doCircle = true;
+    boolean doGrids = false;
     
     Color bg = Color.BLACK;
     Color circle = Color.WHITE;
-    Color grid = Color.RED;
-    Color shape = Color.CYAN;
+    Color grid = Color.WHITE;
+    Color shape = Color.MAGENTA;
     
     ExpressionTree xfunction, yfunction; // parametric functions
 
@@ -59,8 +59,8 @@ public class GeoGrapher extends JFrame{
         		System.out.println("Usage: java GeoGrapher [exprY]");
         		
         		// default expressions -- for debug
-                exprX.setExpression("n");
-                exprY.setExpression("log(e,n)");
+                exprX.setExpression("(5+5cos(n+t))*cos(n)");
+                exprY.setExpression("(5+5cos(n-t))*sin(n)");
     		}
     	}
     	
