@@ -18,11 +18,44 @@ public class FunctionList {
 	}
 	
 	void loadFunctionList() {
+		// generic
 		list.add(new Functs.NatLog());
 		list.add(new Functs.Log());
 		list.add(new Functs.Sqrt());
 		list.add(new Functs.Exp());
 		list.add(new Functs.E());
+		
+		// trigonometric
+		list.add(new Trig.Sine());
+		list.add(new Trig.Cosine());
+		list.add(new Trig.Tangent());
+		list.add(new Trig.Cotangent());
+		list.add(new Trig.Secant());
+		list.add(new Trig.Cosecant());
+		list.add(new Trig.Pi());
+		list.add(new Trig.Tau());
+		list.add(new Trig.Arcsine());
+		list.add(new Trig.Arccosine());
+		list.add(new Trig.Arctangent());
+		list.add(new Trig.Arccotangent());
+		list.add(new Trig.Arcsecant());
+		list.add(new Trig.Arccosecant());
+		list.add(new Trig.ToDegree());
+		list.add(new Trig.ToRadian());
+		
+		// hyperbolic trigonometric
+		list.add(new HyperTrig.HyperSine());
+		list.add(new HyperTrig.HyperCosine());
+		list.add(new HyperTrig.HyperTangent());
+		list.add(new HyperTrig.HyperCotangent());
+		list.add(new HyperTrig.HyperSecant());
+		list.add(new HyperTrig.HyperCosecant());
+		list.add(new HyperTrig.HyperSineInverse());
+		list.add(new HyperTrig.HyperCosineInverse());
+		list.add(new HyperTrig.HyperTangentInverse());
+		list.add(new HyperTrig.HyperCotangentInverse());
+		list.add(new HyperTrig.HyperSecantInverse());
+		list.add(new HyperTrig.HyperCosecantInverse());
 		
 		sortList();
 	}
