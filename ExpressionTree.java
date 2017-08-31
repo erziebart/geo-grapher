@@ -75,7 +75,7 @@ public class ExpressionTree {
 	
 	// pops the top operation from the operation stack and makes a node
 	// using the nodes stack, which is then pushed back onto the node stack
-	void processOperation(Stack<String> operations, Stack<ExpressionTreeNode> nodes) {
+	private void processOperation(Stack<String> operations, Stack<ExpressionTreeNode> nodes) {
 		// get the new operation node
 		String cur = operations.pop();
 		ExpressionTreeNode node = createNode(cur);
@@ -100,7 +100,7 @@ public class ExpressionTree {
 	}
 	
 	// returns a new node according to the operation specified
-	ExpressionTreeNode createNode(String operation) {
+	private ExpressionTreeNode createNode(String operation) {
 		Operation op; // operation to perform
 		
 		if(operation == null) { // Default = number/variable
@@ -137,14 +137,14 @@ public class ExpressionTree {
 	
 	// isNumeric function
 	// regex expression originally found on StackExchange posted by user CraigTP
-	static boolean isNumeric(String str) {
+	private static boolean isNumeric(String str) {
 		return str.matches("-?\\d+(\\.\\d+)?");
 	}
 	
 	// returns int indicating relative operator precedence
 	// 1 = op1 has higher precedence than op2
 	// -1 = op1 has lower precedence than op2
-	static int comparePrecedence(String op1, String op2) {
+	private static int comparePrecedence(String op1, String op2) {
 		if((op1.equals("~") || op1.equals("^"))
 		&& (op2.equals("~") || op2.equals("^"))) {
 				return -1; // evaluate right to left
