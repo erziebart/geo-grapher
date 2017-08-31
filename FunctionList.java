@@ -66,16 +66,17 @@ public class FunctionList {
 	}
 	
 	// uses binary search to add the given Function to the list in its correct alphabetical location
-	void add(Function f) {
+	void add(Function f)  throws FunctionAlreadyInListException {
 		FuncComp comp = new FuncComp();
 		
 		int start, end;
 		start = 0;
 		end = list.size();
+		int result = 1;
 		
 		while(start < end) {
 			int mid = (start + end) / 2;
-			int result = comp.compare(f, list.get(mid));
+			result = comp.compare(f, list.get(mid));
 			
 			if(result < 0) {
 				end = mid;
@@ -87,8 +88,23 @@ public class FunctionList {
 			}
 		}
 		
-		list.add(start, f);
+		if(result != 0) {
+			list.add(start, f);
+		} else {
+			throw new FunctionAlreadyInListException();
+		}
+		
 	}
+	
+	// adds all the functions in the given FunctionList
+	public void addAll(FunctionList fl) {
+		for(int i = 0; i < fl.list.size(); i++) {
+			try {
+				add(fl.list.get(i));
+			} catch(FunctionAlreadyInListException ex) {}
+		}
+	}
+	
 	
 	// uses binary search to return whether a name is in the list
 	boolean isInList(String name) {

@@ -16,12 +16,16 @@ public class Expression {
 	// functions used
 	private FunctionList using;
 	
+	// flag variables allowed
+	private boolean isVariable;
+	
 	// constructor
-	public Expression() {
+	public Expression(boolean isVariable) {
 		this.expr = null;
 		this.tokens = new ArrayList<Token>();
 		this.errors = new ArrayList<MathError>();
 		this.using = new FunctionList();
+		this.isVariable = isVariable;
 	}
 	
 	// sets the current expression String
@@ -43,7 +47,7 @@ public class Expression {
 			checkRefs(allowedFuncts);
 		}
 		
-		// printing the tokens
+		// printing the tokens -- FOR DEBUG
 		System.out.print("{ ");
 		for(Token t: tokens) {
 			System.out.print(t.toString() + " ");
@@ -204,7 +208,7 @@ public class Expression {
 					errors.add(new MathError("parentheses imbalance",begin));
 				}
 				
-				if(!operand) {
+				if(!operand || (operand && lastType == Token.Type.LETTER)) {
 					// tokenize the character
 					lastType = Token.Type.CLOSEP;
 					Token t = new Token(")",lastType,begin);
@@ -244,7 +248,7 @@ public class Expression {
 					// check for open parentheses
 					if(word.endsWith("(")) {
 						// tokenize an open parentheses
-						lastType = Token.Type.OPENP;
+						//lastType = Token.Type.OPENP;
 						parentheses++;
 						
 						// expect an operand next
@@ -365,7 +369,10 @@ public class Expression {
 					Function f;
 					if((f = functions.get(name)) != null) {
 						// add to list
-						using.add(f);
+						try {
+							using.add(f);
+						} catch(FunctionAlreadyInListException ex) {}
+						
 						
 						// increase depth
 						i++;
@@ -394,14 +401,20 @@ public class Expression {
 					
 					// check for n and t variables
 					if(name.compareTo("n") == 0 || name.compareTo("t") == 0) {
-						break;
+						if(isVariable) { // variables allowed
+							break;
+						} else {
+							errors.add(new MathError("variables not permitted",t.getPos()));
+						}
 					}
 					
 					// search for constant with name
 					Function f;
 					if((f = functions.get(name)) != null && f instanceof Constant) {
 						// add to list
-						using.add(f);
+						try {
+							using.add(f);
+						} catch(FunctionAlreadyInListException ex) {}
 						
 					} else {
 						errors.add(new MathError("unknown constant " + name,t.getPos()));
