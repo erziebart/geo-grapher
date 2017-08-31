@@ -12,40 +12,34 @@ public class GeoGrapher extends JFrame{
     
 	private static final long serialVersionUID = 1L;
 	
-	double xradius = 15;
-    double yradius = 15;
-    double xscale = 1;
-    double yscale = 1;
-    int originx, originy;
-    float xpixels, ypixels;
-    double circleradius = 10;
+	private double xradius, yradius;
+    private double xscale, yscale;
+    private int originx, originy;
+    private float xpixels, ypixels;
+    private double circleradius;
     
-    double n;
-    double nstep = Math.PI/90;
-    double nstart = 0;
-    double nstop = 2*Math.PI;
+    private double n;
+    private double nstart, nstop, nstep;
     
-    double time;
-    double tstep = Math.PI/90;
-    long steplength = 10;
-    double tstop = 2*Math.PI;
-    double tstart = 0;
+    private double time;
+    private double tstart, tstop, tstep;
+    private long steplength;
     
-    boolean doCircle = true;
-    boolean doGrids = false;
+    private boolean doCircle;
+    private boolean doGrids;
     
-    Color bg = Color.BLACK;
-    Color circle = Color.WHITE;
-    Color grid = Color.WHITE;
-    Color shape = Color.MAGENTA;
+    private Color bg;
+    private Color circle;
+    private Color grid;
+    private Color shape;
     
-    ExpressionTree xfunction, yfunction; // parametric functions
+    private ExpressionTree xfunction, yfunction; // parametric functions
 
     public static void main(String[] args) {
     	// the expressions
     	Expression exprX, exprY;
-    	exprX = new Expression();
-    	exprY = new Expression();
+    	exprX = new Expression(true);
+    	exprY = new Expression(true);
     	
     	try {
     		exprX.setExpression(args[0]);
@@ -59,8 +53,8 @@ public class GeoGrapher extends JFrame{
         		System.out.println("Usage: java GeoGrapher [exprY]");
         		
         		// default expressions -- for debug
-                exprX.setExpression("(5+5cos(n+t))*cos(n)");
-                exprY.setExpression("(5+5cos(n-t))*sin(n)");
+                exprX.setExpression("n");
+                exprY.setExpression("n");
     		}
     	}
     	
@@ -101,11 +95,11 @@ public class GeoGrapher extends JFrame{
     }
     
     public GeoGrapher(int width, int height) {
-        setTitle("Graph");
-        setSize(width, height);
-        setResizable(false);
-        setBackground(bg);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        xradius = 15;
+        yradius = 15;
+        xscale = 1;
+        yscale = 1;
+        circleradius = 10;
         
         originx = width/2;
         originy = height/2;
@@ -113,46 +107,31 @@ public class GeoGrapher extends JFrame{
         xpixels = originx / (float)xradius;
         ypixels = originy / (float)yradius;
         
+        nstart = -15;
+        nstop = 15;
+        nstep = 0.015625;
+        
+        tstart = -15;
+        tstop = 15;
+        tstep = 0.125;
+        steplength = 10;
+        
+        doCircle = false;
+        doGrids = true;
+        
+        bg = Color.BLACK;
+        circle = Color.WHITE;
+        grid = Color.WHITE;
+        shape = Color.MAGENTA;
+        
         time = tstart;
         
-        // equations
-        //"+(*(t,*(n,n)),+(*(2,n),3))"
-        //"csc(+(*(2,n),t))"
-        //((5+5*Math.cos(Tvalue+time))*Math.cos(Tvalue)); "*(+(5,*(5,cos(+(n,t)))),cos(n))"
-        //((5+5*Math.cos(Tvalue-time))*Math.sin(Tvalue)); "*(+(5,*(5,cos(-(n,t)))),sin(n))"
-        
-        //yfunction.setFunction("*(+(5,*(5,cos(+(n,t)))),cos(n))");
-        //xfunction.setFunction("*(+(5,*(5,cos(-(n,t)))),sin(n))");
-        
-        /*Operation o0 = new Add();
-        yfunction.addOperation(o0,0,0);
-        
-        Operation o1 = new Add();
-        o1.setArgument(1,3);
-        yfunction.addOperation(o1,0,1);
-        
-        Operation o2 = new Mult();
-        yfunction.addOperation(o2,0,0);
-        
-        Operation o3 = new Mult();
-        o3.setArgument(0, 2);
-        yfunction.addOperation(o3,1,0);
-        
-        Operation o4 = new Mult();
-        //o4.setArgument(0, 2);
-        yfunction.addOperation(o4,2,0);
-        
-        int[][]var = {{4,1},{2,1},{3,1}};
-        yfunction.setUpVariable(var);
-        int[][]tm = {{4,0}};
-        yfunction.setUpTime(tm);*/
-        //System.out.println(xpixels);
-        //System.out.println(ypixels);
-        
-        //System.out.println(xfunction(Tstart));
-        //System.out.println(yfunction(Tstart));
-        //System.out.println(xfunction(Tstart + Tstep));
-        //System.out.println(yfunction(Tstart + Tstep));
+        setTitle("Graph");
+        setSize(width, height);
+        setResizable(false);
+        setBackground(bg);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null); // center on screen
     }
     
     public void setFunctions(String[] tokenX, String[] tokenY, FunctionList usingX, FunctionList usingY) {
@@ -161,6 +140,93 @@ public class GeoGrapher extends JFrame{
         
         xfunction.computeConstants();
         yfunction.computeConstants();
+    }
+    
+    public void setGridlines(String[] tokenXrad, String[] tokenYrad,
+    						String[] tokenXscl, String[] tokenYscl,
+    						FunctionList using) {
+    	ExpressionTree xRad = new ExpressionTree(tokenXrad, using);
+    	ExpressionTree yRad = new ExpressionTree(tokenYrad, using);
+    	ExpressionTree xScl = new ExpressionTree(tokenXscl, using);
+    	ExpressionTree yScl = new ExpressionTree(tokenYscl, using);
+    	
+    	xRad.computeConstants();
+    	yRad.computeConstants();
+    	xScl.computeConstants();
+    	yScl.computeConstants();
+    	
+    	xradius = xRad.getValue();
+    	yradius = yRad.getValue();
+    	xscale = xScl.getValue();
+    	yscale = yScl.getValue();
+    	
+    	xpixels = originx / (float)xradius;
+        ypixels = originy / (float)yradius;
+    }
+    
+    public void setRangeN(String[] tokenStart, String[] tokenStop,
+    					String[] tokenStep, FunctionList using) {
+    	ExpressionTree start = new ExpressionTree(tokenStart, using);
+    	ExpressionTree stop = new ExpressionTree(tokenStop, using);
+    	ExpressionTree step = new ExpressionTree(tokenStep, using);
+    	
+    	start.computeConstants();
+    	stop.computeConstants();
+    	step.computeConstants();
+    	
+    	nstart = start.getValue();
+    	nstop = stop.getValue();
+    	nstep = step.getValue();
+    }
+    
+    public void setRangeT(String[] tokenStart, String[] tokenStop,
+						String[] tokenStep, FunctionList using) {
+    	ExpressionTree start = new ExpressionTree(tokenStart, using);
+    	ExpressionTree stop = new ExpressionTree(tokenStop, using);
+    	ExpressionTree step = new ExpressionTree(tokenStep, using);
+    	
+    	start.computeConstants();
+    	stop.computeConstants();
+    	step.computeConstants();
+    	
+    	tstart = start.getValue();
+    	tstop = stop.getValue();
+    	tstep = step.getValue();
+    	time = tstart;
+    }
+    
+    public void setCircleRadius(String[] tokenRadius, FunctionList using) {
+    	ExpressionTree radius = new ExpressionTree(tokenRadius, using);
+    	radius.computeConstants();
+    	circleradius = radius.getValue();
+    }
+    
+    public void setStepLength(long time) {
+    	steplength = time;
+    }
+    
+    public void setDoGridlines(boolean value) {
+    	doGrids = value;
+    }
+    
+    public void setDoCircle(boolean value) {
+    	doCircle = value;
+    }
+    
+    public void setBackgroundColor(Color c) {
+    	bg = c;
+    }
+    
+    public void setCircleColor(Color c) {
+    	circle = c;
+    }
+    
+    public void setGridlineColor(Color c) {
+    	grid = c;
+    }
+    
+    public void setShapeColor(Color c) {
+    	shape = c;
     }
     
     @Override
@@ -187,7 +253,7 @@ public class GeoGrapher extends JFrame{
         }
         
         // update t
-        if ((time <= tstop && tstep>0) || (time >= tstop && tstep<0)) {
+        if ((time < tstop && tstep>0) || (time > tstop && tstep<0)) {
             time += tstep;
         } else {
             time = tstart;
