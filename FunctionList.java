@@ -93,7 +93,6 @@ public class FunctionList {
 		} else {
 			throw new FunctionAlreadyInListException();
 		}
-		
 	}
 	
 	// adds all the functions in the given FunctionList
@@ -104,7 +103,6 @@ public class FunctionList {
 			} catch(FunctionAlreadyInListException ex) {}
 		}
 	}
-	
 	
 	// uses binary search to return whether a name is in the list
 	boolean isInList(String name) {

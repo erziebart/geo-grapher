@@ -248,7 +248,6 @@ public class Expression {
 					// check for open parentheses
 					if(word.endsWith("(")) {
 						// tokenize an open parentheses
-						//lastType = Token.Type.OPENP;
 						parentheses++;
 						
 						// expect an operand next
