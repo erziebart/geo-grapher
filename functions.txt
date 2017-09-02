@@ -1,0 +1,46 @@
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+:::: Built-In Functions and Constants ::::
+
+Format: [identifier({arguments})] -- [description]
+
+Logs and Roots:
+ln(x) -- Natural logarithm (log base e)
+log(b,x) -- Logarithm with base
+sqrt(x) -- Square root
+exp(x) -- Exponential function (e^x)
+e() -- Euler's number (2.71828...)
+
+Trigonometric:
+sin(x) -- Sine of angle in radians
+cos(x) -- Cosine of angle in radians
+tan(x) -- Tangent of angle in radians
+cot(x) -- Cotangent of angle in radians
+sec(x) -- Secant of angle in radians
+csc(x) -- Cosecant of angle in radians
+pi() -- Circle constant pi (3.14159...)
+tau() -- Circle constant tau (2 * pi)
+asin(y) -- Arcsine, inverse of sine
+acos(y) -- Arccosine, inverse of cosine
+atan(y) -- Arctangent, inverse of tangent
+acot(y) -- Arccotangent, inverse of cotangent
+asec(y) -- Arcsecant, inverse of secant
+acsc(y) -- Arccosecant, inverse of cosecant
+deg(r) -- converts angle in radians to degrees
+rad(d) -- converts angle in degrees to radians
+
+Hyperbolic:
+sinh(x) -- Hyperbolic sine
+cosh(x) -- Hyperbolic cosine
+tanh(x) -- Hyperbolic tangent
+coth(x) -- Hyperbolic cotangent
+sech(x) -- Hyperbolic secant
+csch(x) -- Hyperbolic cosecant
+asinh(y) -- Inverse of hyperbolic sine
+acosh(y) -- Inverse of hyperbolic cosine
+atanh(y) -- Inverse of hyperbolic tangent
+acoth(y) -- Inverse of hyperbolic cotangent
+asech(y) -- Inverse of hyperbolic secant
+acsch(y) -- Inverse of hyperbolic cosecant
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
