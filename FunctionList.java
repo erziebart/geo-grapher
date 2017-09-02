@@ -18,6 +18,9 @@ public class FunctionList {
 	}
 	
 	void loadFunctionList() {
+		// empty list
+		list.clear();
+		
 		// generic
 		list.add(new Functs.NatLog());
 		list.add(new Functs.Log());

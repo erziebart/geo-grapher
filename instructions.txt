@@ -1,0 +1,61 @@
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+:::: GeoGrapher version 1.0 ::::
+
+Function grapher which can change over time. Quick start Guide:
+
+Two-Windows:
+1.) text prompts and control center
+2.) graph window
+
+
+Menus:
+1.) Functions
+2.) Window
+3.) Manual
+
+
+:::::::::::: FUNCTIONS MENU ::::::::::::
+
+--> Equations: main feature of GeoGrapher. Allows the user to edit the
+    current equations displayed in the graph window. Equations are
+    parametric, meaning both X and Y equations need to be entered. Both
+    equations depend on variable "n". Main operations are (+,-,*,/,^).
+    **Sample expression: "(4*n) - (1/3)*n^2 + 1"** 
+    Can also add variable "t" to either or both equations in order to 
+    develop the curve over time.
+    **Sample expression: "(4*t*n) - (1/3)*n^2 + 1 + t"** 
+    Finally, the user can make use of many built-in functions and 
+    constants. (See function catalog for full list).
+    **Sample expression: "cos(pi*n) + sin(n+t)^2"**
+    
+--> N-Range: allows user to edit the range over which the variable n
+    varies, as well as the step size. Can make use of built-in
+    functions and constants, but not variables.
+    
+--> T-Range: allows user to edit the range over which the variable t
+    varies, as well as the step size. Can make use of built-in
+    functions and constants, but not variables.
+	
+:::::::::::: WINDOW MENU ::::::::::::
+
+--> Grids: allows user to edit the grid range and frequency of tick
+    marks. Can make use of built-in functions and constants, but not
+    variables
+    
+--> Circle: can edit radius of drawn circle (turned off by default, 
+    see option menu to turn on)
+	
+--> Colors: allows user to edit colors of graph
+
+--> Options: can toggle showing grids and circle, and edit speed of
+    update frame rate
+	
+	
+:::::::::::: MANUAL ::::::::::::
+
+--> Instructions: can view the quick start guide (this!)
+
+--> Function Catalog: can view the function catalog
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\

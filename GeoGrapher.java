@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 public class GeoGrapher extends JFrame{
     
 	private static final long serialVersionUID = 1L;
-	
+
 	private double xradius, yradius;
     private double xscale, yscale;
     private int originx, originy;

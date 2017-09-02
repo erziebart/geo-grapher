@@ -48,11 +48,11 @@ public class Expression {
 		}
 		
 		// printing the tokens -- FOR DEBUG
-		System.out.print("{ ");
+		/*System.out.print("{ ");
 		for(Token t: tokens) {
 			System.out.print(t.toString() + " ");
 		}
-		System.out.print("}");
+		System.out.print("}");*/
 	}
 	
 	// resets the token and error lists
