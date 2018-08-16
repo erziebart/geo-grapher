@@ -9,4 +9,4 @@ Steps to Run:
 
 3.) In the directory where the files are placed, run the command "java -jar geographer-1.0.jar"
 
-![user screenshot](https://github.com/erziebart/geo-grapher/screenshot.png)
+![user screenshot](https://github.com/erziebart/geo-grapher/blob/master/screenshot.png)
