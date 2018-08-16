@@ -1,5 +1,5 @@
 # geo-grapher
-Summary: GeoGrapher is a 2D parametric graphing program. The user can define equations for x and y as a funciton of the variable n, as well as a variable t which updates over time to transform the curve. Values and expressions are enterred as plain text strings. The interpretation of these strings is meant to mimic, as closely as possible, the way mathematical expressions are usually written down and understood in plain text. Additionally,  the program hosts several built-in functions which can help the user define the parametric equations.
+Summary: GeoGrapher is a 2D parametric graphing program. The user can define equations for x and y as a function of the variable n, as well as a variable t which updates over time to transform the curve. Values and expressions are enterred as plain text strings. The interpretation of these strings is meant to mimic, as closely as possible, the way mathematical expressions are usually written down and understood in plain text. Additionally,  the program hosts several built-in functions which can help the user define the parametric equations.
 
 Code Files:
 - GeoGrapher.java
